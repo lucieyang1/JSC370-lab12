@@ -1,5 +1,5 @@
 ---
-title: "JSC370 Final Project"
+title: "JSC370 Lab 12 Project"
 author: "Lucie Yang"
 output: 
     html_document:
@@ -7,4 +7,50 @@ output:
         toc_float: TRUE
 ---
 
-Hello!! This is my JSC370 Final Project website.
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, include  = TRUE, echo = FALSE)
+```
+
+```{r}
+source("process_starbucks_data.R")
+```
+
+Hello!! This is my JSC370 Lab 12 Project website.
+
+
+## Showcasing plots {.tabset}
+
+### Figure 1
+
+```{r}
+# Set up mapping details
+set_map_details <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('steelblue')
+)
+
+# Make sure both maps are on the same color scale
+shadeLimit <- 125
+
+# Create hover text
+sb_locs_state$hover <- with(sb_locs_state, paste("Number of Starbucks: ", n_stores, '<br>', "State: ", state.y, '<br>', "Population: ", population))
+
+# Create the map
+map1 <- plot_geo(sb_locs_state, locationmode = "USA-states") %>% 
+  add_trace(z = ~n_stores, text = ~hover, locations = ~state, color = ~n_stores,
+            colors = "viridis", hoverinfo = "text") %>% 
+  layout(title = "Distribution of Starbucks Stores by State", geo = set_map_details)
+map1
+```
+
+### Figure 2
+
+```{r}
+map2 <- plot_geo(sb_locs_state, locationmode = "USA-states") %>% 
+  add_trace(z = ~population, text = ~hover, locations = ~state, color = ~population,
+            colors = "viridis", hoverinfo = "text") %>% 
+  layout(title = "Population by State", geo = set_map_details)
+map2
+```
